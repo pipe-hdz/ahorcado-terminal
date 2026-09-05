@@ -19,6 +19,97 @@
     }
   };
 
+  const HINTS = {
+    es: {
+      prog: {
+        VARIABLE: "Guarda un valor que puede cambiar durante la ejecución",
+        FUNCION: "Bloque de código reutilizable que se puede llamar",
+        BUCLE: "Repite instrucciones mientras se cumpla una condición",
+        SERVIDOR: "Atiende peticiones de otros computadores conectados",
+        TERMINAL: "Interfaz de texto para darle comandos al sistema",
+        TECLADO: "Periférico con teclas que se usa para escribir",
+        ALGORITMO: "Secuencia de pasos para resolver un problema",
+        DEPURAR: "Buscar y corregir errores en el código",
+        COMPILAR: "Convertir código fuente en un programa ejecutable",
+        GITHUB: "Plataforma donde alojas y compartes repositorios de código"
+      },
+      animals: {
+        ELEFANTE: "El mamífero terrestre más grande, tiene trompa",
+        JIRAFA: "Animal africano de cuello larguísimo",
+        COCODRILO: "Reptil acuático con mandíbulas muy poderosas",
+        PINGUINO: "Ave que no vuela y vive en climas fríos",
+        MURCIELAGO: "El único mamífero capaz de volar",
+        TIBURON: "Depredador marino con muchos dientes",
+        ARDILLA: "Roedor pequeño que guarda nueces y trepa árboles",
+        CANGURO: "Marsupial australiano que salta con sus patas traseras"
+      },
+      countries: {
+        ARGENTINA: "País sudamericano famoso por el tango y el asado",
+        COLOMBIA: "País cafetero con costas en dos océanos",
+        PARAGUAY: "País sudamericano sin salida al mar, habla guaraní",
+        URUGUAY: "País pequeño de Sudamérica, capital Montevideo",
+        ECUADOR: "País atravesado por la línea equinoccial",
+        VENEZUELA: "País con las reservas de petróleo más grandes del mundo",
+        HONDURAS: "País centroamericano con ruinas mayas en Copán",
+        GUATEMALA: "País centroamericano de origen maya, moneda quetzal"
+      },
+      food: {
+        EMPANADA: "Masa rellena, horneada o frita, típica sudamericana",
+        GUACAMOLE: "Puré de palta/aguacate, típico mexicano",
+        TORTILLA: "Puede ser de maíz o de papa, según el país",
+        CEVICHE: "Pescado o marisco marinado en cítricos",
+        ASADO: "Carne cocinada a las brasas, tradición argentina",
+        TAMAL: "Masa de maíz envuelta en hoja, cocida al vapor",
+        AREPA: "Masa de maíz típica de Venezuela y Colombia",
+        CHURRO: "Masa frita alargada, se come con azúcar o chocolate"
+      }
+    },
+    en: {
+      prog: {
+        VARIABLE: "Stores a value that can change during execution",
+        FUNCTION: "Reusable block of code that you can call",
+        LOOP: "Repeats instructions while a condition holds",
+        SERVER: "Handles requests from other connected computers",
+        TERMINAL: "Text interface for issuing commands to the system",
+        KEYBOARD: "Peripheral with keys used for typing",
+        ALGORITHM: "Sequence of steps to solve a problem",
+        DEBUG: "Find and fix errors in the code",
+        COMPILE: "Turn source code into an executable program",
+        GITHUB: "Platform where you host and share code repositories"
+      },
+      animals: {
+        ELEPHANT: "The largest land mammal, has a trunk",
+        GIRAFFE: "African animal with an extremely long neck",
+        CROCODILE: "Aquatic reptile with very powerful jaws",
+        PENGUIN: "Flightless bird that lives in cold climates",
+        BAT: "The only mammal capable of true flight",
+        SHARK: "Marine predator with many teeth",
+        SQUIRREL: "Small rodent that hoards nuts and climbs trees",
+        KANGAROO: "Australian marsupial that hops on its hind legs"
+      },
+      countries: {
+        ARGENTINA: "South American country famous for tango and asado",
+        COLOMBIA: "Coffee-growing country with two coastlines",
+        PARAGUAY: "Landlocked South American country, speaks Guaraní",
+        URUGUAY: "Small South American country, capital Montevideo",
+        ECUADOR: "Country crossed by the equator",
+        VENEZUELA: "Country with the largest oil reserves in the world",
+        HONDURAS: "Central American country with Mayan ruins at Copán",
+        GUATEMALA: "Central American country of Mayan origin, currency quetzal"
+      },
+      food: {
+        EMPANADA: "Stuffed pastry, baked or fried, typical of South America",
+        GUACAMOLE: "Avocado dip, typical of Mexico",
+        TORTILLA: "Can be made of corn or potato, depending on the country",
+        CEVICHE: "Fish or seafood marinated in citrus juice",
+        BARBECUE: "Meat cooked over coals, an Argentine tradition",
+        TAMALE: "Corn dough wrapped in a leaf, steamed",
+        AREPA: "Corn dough patty typical of Venezuela and Colombia",
+        CHURRO: "Fried dough pastry, eaten with sugar or chocolate"
+      }
+    }
+  };
+
   const TEXT = {
     es: {
       windowTitle: "ahorcado.sh — bash",
@@ -38,7 +129,7 @@
       logLoaded: n => `palabra cargada (${n} letras)`,
       logCorrect: l => `'${l}' correcto`,
       logWrong: l => `'${l}' no está en la palabra`,
-      logHint: l => `pista usada: se reveló '${l}' (-${HINT_COST} intentos)`,
+      logHint: h => `pista: ${h} (-${HINT_COST} intentos)`,
       logSuccess: "proceso finalizado con exito (0)",
       logError: "proceso finalizado con error (1)",
       ariaLetter: l => "letra " + l,
@@ -62,7 +153,7 @@
       logLoaded: n => `word loaded (${n} letters)`,
       logCorrect: l => `'${l}' correct`,
       logWrong: l => `'${l}' is not in the word`,
-      logHint: l => `hint used: revealed '${l}' (-${HINT_COST} attempts)`,
+      logHint: h => `hint: ${h} (-${HINT_COST} attempts)`,
       logSuccess: "process finished successfully (0)",
       logError: "process finished with error (1)",
       ariaLetter: l => "letter " + l,
@@ -149,7 +240,8 @@
     word: "",
     guessed: new Set(),
     wrong: 0,
-    over: false
+    over: false,
+    hintUsed: false
   };
 
   function t(){ return TEXT[lang]; }
@@ -202,8 +294,7 @@
 
   function renderHintButton(){
     el.hintBtn.textContent = t().hintBtn();
-    const remainingLetters = [...state.word].some(ch => !state.guessed.has(ch));
-    el.hintBtn.disabled = state.over || !remainingLetters;
+    el.hintBtn.disabled = state.over || state.hintUsed;
   }
 
   function log(msg, cls){
@@ -243,13 +334,11 @@
   }
 
   function useHint(){
-    if(state.over) return;
-    const remaining = [...state.word].filter(ch => !state.guessed.has(ch));
-    if(remaining.length === 0) return;
-    const letter = remaining[Math.floor(Math.random() * remaining.length)];
-    state.guessed.add(letter);
+    if(state.over || state.hintUsed) return;
+    state.hintUsed = true;
     state.wrong += HINT_COST;
-    log(t().logHint(letter), "hint");
+    const hintText = HINTS[lang][el.category.value][state.word];
+    log(t().logHint(hintText), "hint");
     checkEnd();
     render();
   }
@@ -288,7 +377,7 @@
   }
 
   function newGame(){
-    state = { word: pickWord(), guessed: new Set(), wrong: 0, over: false };
+    state = { word: pickWord(), guessed: new Set(), wrong: 0, over: false, hintUsed: false };
     el.catLabel.textContent = t().categories[el.category.value];
     el.banner.textContent = "";
     el.banner.className = "banner";
