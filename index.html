@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Ahorcado Terminal</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600;700&display=swap">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<div class="crt">
+  <div class="titlebar">
+    <span class="dot red"></span>
+    <span class="dot yellow"></span>
+    <span class="dot green"></span>
+    <span id="windowTitle">ahorcado.sh — bash</span>
+  </div>
+  <div class="screen">
+    <p class="prompt-line"><span class="sym">$</span> <span id="promptPrefix">./ahorcado --categoria</span> <span id="catLabel">programación</span></p>
+    <h1 id="heading">AHORCADO TERMINAL</h1>
+
+    <div class="row">
+      <label class="category-select">
+        <span id="categoryLabel">categoria:</span>
+        <select id="categorySelect" aria-label="Elegir categoría"></select>
+      </label>
+      <div class="btn-group">
+        <button class="btn" id="hintBtn">pista (-2)</button>
+        <button class="btn ghost" id="langBtn">English</button>
+        <button class="btn" id="newWordBtn">nueva_palabra()</button>
+      </div>
+    </div>
+
+    <div class="stage">
+      <pre class="gallows" id="gallows" aria-hidden="true"></pre>
+      <div class="side">
+        <div>
+          <div class="meter-label" id="attemptsLabel">intentos restantes</div>
+          <div class="meter" id="meter"></div>
+        </div>
+        <div>
+          <div class="meter-label" id="logLabel">log</div>
+          <div class="log" id="log" aria-live="polite"></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="banner" id="banner"></div>
+    <div class="word" id="word"></div>
+
+    <div class="keyboard" id="keyboard"></div>
+  </div>
+</div>
+
+<script src="script.js"></script>
+</body>
+</html>
