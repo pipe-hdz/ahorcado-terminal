@@ -29,6 +29,8 @@
       newWordBtn: "nueva_palabra()",
       hintBtn: () => `pista (-${HINT_COST})`,
       langBtn: "English",
+      musicOn: "🔊 música",
+      musicOff: "🔈 música",
       attemptsLabel: "intentos restantes",
       logLabel: "log",
       winBanner: w => "PALABRA DESCIFRADA — " + w,
@@ -51,6 +53,8 @@
       newWordBtn: "new_word()",
       hintBtn: () => `hint (-${HINT_COST})`,
       langBtn: "Español",
+      musicOn: "🔊 music",
+      musicOff: "🔈 music",
       attemptsLabel: "attempts left",
       logLabel: "log",
       winBanner: w => "WORD CRACKED — " + w,
@@ -124,6 +128,7 @@
     newWordBtn: document.getElementById("newWordBtn"),
     hintBtn: document.getElementById("hintBtn"),
     langBtn: document.getElementById("langBtn"),
+    musicBtn: document.getElementById("musicBtn"),
     gallows: document.getElementById("gallows"),
     meter: document.getElementById("meter"),
     log: document.getElementById("log"),
@@ -139,6 +144,7 @@
   };
 
   let lang = "es";
+  let musicOn = false;
   let state = {
     word: "",
     guessed: new Set(),
@@ -276,6 +282,7 @@
     el.category.setAttribute("aria-label", t().ariaCategory);
     el.newWordBtn.textContent = t().newWordBtn;
     el.langBtn.textContent = t().langBtn;
+    el.musicBtn.textContent = musicOn ? t().musicOn : t().musicOff;
     el.attemptsLabel.textContent = t().attemptsLabel;
     el.logLabel.textContent = t().logLabel;
   }
@@ -301,6 +308,10 @@
   el.hintBtn.addEventListener("click", useHint);
   el.langBtn.addEventListener("click", switchLanguage);
   el.category.addEventListener("change", newGame);
+  el.musicBtn.addEventListener("click", () => {
+    musicOn = Music.toggle();
+    el.musicBtn.textContent = musicOn ? t().musicOn : t().musicOff;
+  });
 
   document.addEventListener("keydown", (e) => {
     const letter = e.key.toUpperCase();
